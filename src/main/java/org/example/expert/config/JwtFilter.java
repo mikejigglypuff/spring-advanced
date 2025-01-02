@@ -61,6 +61,8 @@ public class JwtFilter implements Filter {
             httpRequest.setAttribute("email", claims.get("email"));
             httpRequest.setAttribute("userRole", claims.get("userRole"));
 
+            // 이중 if문
+            // 코드만 봐도 알 수 있는 내용의 주석
             if (url.startsWith("/admin")) {
                 // 관리자 권한이 없는 경우 403을 반환합니다.
                 if (!UserRole.ADMIN.equals(userRole)) {

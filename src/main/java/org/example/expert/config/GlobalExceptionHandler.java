@@ -11,25 +11,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+// 각 메서드별로 status가 한 번만 사용되므로 인라인함
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<Map<String, Object>> invalidRequestExceptionException(InvalidRequestException ex) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return getErrorResponse(status, ex.getMessage());
+        return getErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<Map<String, Object>> handleAuthException(AuthException ex) {
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-        return getErrorResponse(status, ex.getMessage());
+        return getErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<Map<String, Object>> handleServerException(ServerException ex) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return getErrorResponse(status, ex.getMessage());
+        return getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
     public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
