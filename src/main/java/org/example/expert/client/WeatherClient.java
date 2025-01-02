@@ -28,7 +28,6 @@ public class WeatherClient {
 
         WeatherDto[] weatherArray = responseEntity.getBody();
 
-        // 의미 없는 else문을 early return 구조로 변경
         if (!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
             throw new ServerException("날씨 데이터를 가져오는데 실패했습니다. 상태 코드: " + responseEntity.getStatusCode());
         }

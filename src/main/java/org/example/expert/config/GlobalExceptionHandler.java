@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-// 각 메서드별로 status가 한 번만 사용되므로 인라인함
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
