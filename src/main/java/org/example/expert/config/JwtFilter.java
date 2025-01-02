@@ -63,13 +63,8 @@ public class JwtFilter implements Filter {
 
             // 이중 if문
             // 코드만 봐도 알 수 있는 내용의 주석
-            if (url.startsWith("/admin")) {
-                // 관리자 권한이 없는 경우 403을 반환합니다.
-                if (!UserRole.ADMIN.equals(userRole)) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
-                    return;
-                }
-                chain.doFilter(request, response);
+            if (url.startsWith("/admin") && !UserRole.ADMIN.equals(userRole)) {
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
                 return;
             }
 
