@@ -36,9 +36,9 @@ public class AuthService {
         }
 
         User newUser = new User(
-                signupRequest.getEmail(),
-                encodedPassword,
-                userRole
+            signupRequest.getEmail(),
+            encodedPassword,
+            userRole
         );
         User savedUser = userRepository.save(newUser);
 
@@ -49,7 +49,7 @@ public class AuthService {
 
     public SigninResponse signin(SigninRequest signinRequest) {
         User user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(
-                () -> new InvalidRequestException("가입되지 않은 유저입니다."));
+            () -> new InvalidRequestException("가입되지 않은 유저입니다."));
 
         if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
             throw new AuthException("잘못된 비밀번호입니다.");
