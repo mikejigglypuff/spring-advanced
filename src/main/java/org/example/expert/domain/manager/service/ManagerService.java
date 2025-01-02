@@ -1,6 +1,7 @@
 package org.example.expert.domain.manager.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.expert.domain.common.Service.EntityLookupService;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
@@ -33,12 +34,10 @@ public class ManagerService {
     public ManagerSaveResponse saveManager(AuthUser authUser, long todoId, ManagerSaveRequest managerSaveRequest) {
         // 일정을 만든 유저
         User user = User.fromAuthUser(authUser);
-        Todo todo = todoRepository.findById(todoId)
-            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
-        if (!ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
-            throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
-        }
+        Todo todo = EntityLookupService.findEntityById(todoRepository, todoId, Todo.class);
+
+        checkUserIntegrity(user, todo, false);
 
         User managerUser = userRepository.findById(managerSaveRequest.getManagerUserId())
             .orElseThrow(() -> new InvalidRequestException("등록하려고 하는 담당자 유저가 존재하지 않습니다."));
@@ -57,8 +56,7 @@ public class ManagerService {
     }
 
     public List<ManagerResponse> getManagers(long todoId) {
-        Todo todo = todoRepository.findById(todoId)
-            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+        Todo todo = EntityLookupService.findEntityById(todoRepository, todoId, Todo.class);
 
         List<Manager> managerList = managerRepository.findAllByTodoId(todo.getId());
 
@@ -75,23 +73,24 @@ public class ManagerService {
 
     @Transactional
     public void deleteManager(long userId, long todoId, long managerId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new InvalidRequestException("User not found"));
+        User user = EntityLookupService.findEntityById(userRepository, userId, User.class);
 
-        Todo todo = todoRepository.findById(todoId)
-            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+        Todo todo = EntityLookupService.findEntityById(todoRepository, todoId, Todo.class);
+        checkUserIntegrity(user, todo, true);
 
-        if (todo.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
-            throw new InvalidRequestException("해당 일정을 만든 유저가 유효하지 않습니다.");
-        }
-
-        Manager manager = managerRepository.findById(managerId)
-            .orElseThrow(() -> new InvalidRequestException("Manager not found"));
+        Manager manager = EntityLookupService.findEntityById(managerRepository, managerId, Manager.class);
 
         if (!ObjectUtils.nullSafeEquals(todo.getId(), manager.getTodo().getId())) {
             throw new InvalidRequestException("해당 일정에 등록된 담당자가 아닙니다.");
         }
 
         managerRepository.delete(manager);
+    }
+
+    // user에 대해 null check가 필요하지 않은 곳도 있으므로 이에 대한 수행 여부를 매개변수로 받음
+    private void checkUserIntegrity(User user, Todo todo, boolean checkNullUser) {
+        if ((checkNullUser && todo.getUser() == null) || !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
+            throw new InvalidRequestException("해당 일정을 만든 유저가 유효하지 않습니다.");
+        }
     }
 }
