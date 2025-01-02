@@ -15,7 +15,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
-    public ResponseEntity<Map<String, Object>> invalidRequestExceptionException(InvalidRequestException ex) {
+    public ResponseEntity<Map<String, Object>> handleInvalidRequestException(InvalidRequestException ex) {
         return getErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
