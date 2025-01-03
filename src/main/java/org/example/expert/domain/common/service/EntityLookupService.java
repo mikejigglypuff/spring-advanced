@@ -1,4 +1,4 @@
-package org.example.expert.domain.common.Service;
+package org.example.expert.domain.common.service;
 
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public class EntityLookupService {
     public static <T> T findEntityById(JpaRepository<T, Long> repository, long id, Class<T> classType) {
         return repository.findById(id)
-            .orElseThrow(() -> new InvalidRequestException(classType.getSimpleName() + "not found"));
+            .orElseThrow(() -> new InvalidRequestException(classType.getSimpleName() + " not found"));
     }
 }
