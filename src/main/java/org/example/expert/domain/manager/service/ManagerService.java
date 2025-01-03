@@ -37,7 +37,7 @@ public class ManagerService {
 
         Todo todo = EntityLookupService.findEntityById(todoRepository, todoId, Todo.class);
 
-        checkUserIntegrity(user, todo, false);
+        checkUserIntegrity(user, todo);
 
         User managerUser = userRepository.findById(managerSaveRequest.getManagerUserId())
             .orElseThrow(() -> new InvalidRequestException("등록하려고 하는 담당자 유저가 존재하지 않습니다."));
@@ -76,7 +76,7 @@ public class ManagerService {
         User user = EntityLookupService.findEntityById(userRepository, userId, User.class);
 
         Todo todo = EntityLookupService.findEntityById(todoRepository, todoId, Todo.class);
-        checkUserIntegrity(user, todo, true);
+        checkUserIntegrity(user, todo);
 
         Manager manager = EntityLookupService.findEntityById(managerRepository, managerId, Manager.class);
 
@@ -88,8 +88,8 @@ public class ManagerService {
     }
 
     // user에 대해 null check가 필요하지 않은 곳도 있으므로 이에 대한 수행 여부를 매개변수로 받음
-    private void checkUserIntegrity(User user, Todo todo, boolean checkNullUser) {
-        if ((checkNullUser && todo.getUser() == null) || !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
+    private void checkUserIntegrity(User user, Todo todo) {
+        if (todo.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
             throw new InvalidRequestException("해당 일정을 만든 유저가 유효하지 않습니다.");
         }
     }
