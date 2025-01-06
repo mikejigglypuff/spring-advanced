@@ -19,6 +19,10 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
         this.body = reader.lines().collect(Collectors.joining(System.lineSeparator()));
     }
 
+    public String getBody() {
+        return this.body;
+    }
+
     @Override
     public ServletInputStream getInputStream() throws IOException {
         return new CachedBodyServletInputStream(this.body.getBytes());

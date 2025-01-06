@@ -1,21 +1,13 @@
 package org.example.expert.domain.todo.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.comment.entity.Comment;
 import org.example.expert.domain.common.entity.Timestamped;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.user.entity.User;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +30,11 @@ public class Todo extends Timestamped {
     private User user;
 
     @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
+    @BatchSize(size = 25)
     private final List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
+    @BatchSize(size = 25)
     private final List<Manager> managers = new ArrayList<>();
 
     public Todo(String title, String contents, String weather, User user) {

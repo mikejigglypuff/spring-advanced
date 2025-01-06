@@ -29,7 +29,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
             request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE),
             LocalDateTime.now(),
             request.getRequestURI(),
-            cachedBodyRequest.getReader()
+            cachedBodyRequest.getBody()
         );
 
         return true;
