@@ -3,11 +3,11 @@ package org.example.expert.domain.todo.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.expert.domain.comment.entity.Comment;
 import org.example.expert.domain.common.entity.Timestamped;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.user.entity.User;
-import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +29,15 @@ public class Todo extends Timestamped {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Setter
     @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
-    @BatchSize(size = 25)
-    private final List<Comment> comments = new ArrayList<>();
+    //@BatchSize(size = 25)
+    private List<Comment> comments = new ArrayList<>();
 
+    @Setter
     @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
-    @BatchSize(size = 25)
-    private final List<Manager> managers = new ArrayList<>();
+    //@BatchSize(size = 25)
+    private List<Manager> managers = new ArrayList<>();
 
     public Todo(String title, String contents, String weather, User user) {
         this.title = title;

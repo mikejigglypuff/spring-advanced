@@ -2,8 +2,10 @@ package org.example.expert.domain.todo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.client.WeatherClient;
+import org.example.expert.domain.comment.repository.CommentRepository;
 import org.example.expert.domain.common.service.EntityLookupService;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
@@ -23,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class TodoService {
 
     private final TodoRepository todoRepository;
+    private final CommentRepository commentRepository;
+    private final ManagerRepository managerRepository;
     private final WeatherClient weatherClient;
 
     @Transactional
@@ -53,6 +57,12 @@ public class TodoService {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
+
+        for(Todo todo : todos) {
+            Long todoId = todo.getId();
+            todo.setComments(commentRepository.findAllByTodoId(todoId));
+            todo.setManagers(managerRepository.findAllByTodoId(todoId));
+        }
 
         return todos.map(todo -> new TodoResponse(
             todo.getId(),
